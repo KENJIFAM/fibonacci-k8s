@@ -23,12 +23,14 @@ const Fib = () => {
   React.useEffect(() => {
     fetchValues();
     fetchIndexes();
-  });
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await axios.post('api/values', { index });
     setIndex('');
+    fetchValues();
+    fetchIndexes();
   };
 
   const seenIndexesList = () => {
@@ -39,7 +41,7 @@ const Fib = () => {
     const entries = [];
     for (let key in values) {
       entries.push(
-        <div>
+        <div key={key}>
           For index {key} I calculated {values[key]}
         </div>
       );
