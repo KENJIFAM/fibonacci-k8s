@@ -19,4 +19,17 @@ after_success:
   - docker push kenjifam/multi-nginx
   - docker push kenjifam/multi-server
   - docker push kenjifam/multi-worker
-  
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-2
+  app: fibonacci
+  env: Fibonacci-env
+  bucket_name: elasticbeanstalk-us-west-2-040803648757
+  bucket_path: fibonacci_complex
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
+    

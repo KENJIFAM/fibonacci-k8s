@@ -1,0 +1,36 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "client",
+      "image": "kenjifam/multi-client",
+      "hostname": "client",
+      "essential": false
+    },
+    {
+      "name": "server",
+      "image": "kenjifam/multi-server",
+      "hostname": "api",
+      "essential": false
+    },
+    {
+      "name": "worker",
+      "image": "kenjifam/multi-worker",
+      "hostname": "worker",
+      "essential": false
+    },
+    {
+      "name": "nginx",
+      "image": "kenjifam/multi-nginx",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [
+        {        
+          "hostPort": 80,
+          "containerPort": 80          
+        }
+      ],
+      "links": ["client", "server"]
+    }
+  ]
+}
