@@ -1,8 +1,19 @@
 import * as React from 'react';
 import axios from 'axios';
+import { Button, Header, Icon, Image, Modal } from 'semantic-ui-react';
 
 interface Values {
   [key: string]: string;
+}
+
+interface Data {
+  value: string;
+  processTime: number;
+  len: number;
+}
+
+interface ShowValueProps {
+  value: string;
 }
 
 const Fib = () => {
@@ -40,11 +51,26 @@ const Fib = () => {
   const valuesList = () => {
     const entries = [];
     for (let key in values) {
-      entries.push(
-        <div key={key}>
-          For index {key} I calculated {values[key]}
-        </div>
-      );
+      if (values[key] === 'Nothing yet!') {
+        entries.push(
+          <div key={key}>
+            Index {key}, value: {values[key]}
+          </div>
+        );
+      } else {
+        const data: Data = JSON.parse(values[key]);
+        const value = data.value.length <= 30
+          ? data.value
+          : `...${data.value.slice(-30)}`;
+        entries.push(
+          <div key={key}>
+            Index {key}, value: {value} ({data.len} digits, {data.processTime} ms)
+            {data.value.length > 30 &&
+              <ShowValue value={data.value} />
+            }
+          </div>
+        );
+      }
     }
     return entries;
   };
@@ -54,7 +80,10 @@ const Fib = () => {
       <form onSubmit={handleSubmit}>
         <label>Enter your index:</label>
         <input
+          type='number'
           value={index}
+          min='0'
+          max='1000000'
           onChange={event => setIndex(event.target.value)}
         />
         <button>Submit</button>
@@ -68,5 +97,15 @@ const Fib = () => {
     </div>
   );
 };
+
+const ShowValue = ({ value }: ShowValueProps) => (
+  <Modal trigger={<Button>Show</Button>}>
+    <Modal.Content scrolling >
+      <Modal.Description>
+        {value}
+      </Modal.Description>
+    </Modal.Content>
+  </Modal>
+);
 
 export default Fib;
