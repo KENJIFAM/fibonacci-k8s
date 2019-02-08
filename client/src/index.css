@@ -39,3 +39,13 @@ body {
   }
 }
 
+label {
+  display: block;
+  font-weight: 700;
+  font-size: 18.72px;
+  margin: 18.72px 0;
+}
+
+.scrolling.content .description {
+  word-wrap: break-word;
+}
