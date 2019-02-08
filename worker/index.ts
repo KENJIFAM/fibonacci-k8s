@@ -2,6 +2,12 @@ import keys from './keys';
 import redis, { RedisClient } from 'redis';
 import { zero, one, BigInteger } from 'big-integer';
 
+interface Data {
+  value: string;
+  processTime: number;
+  len: number;
+}
+
 // Redis stuffs
 const redisClient: RedisClient = redis.createClient({
   host: keys.redisHost,
@@ -38,16 +44,20 @@ const fib = async (index: number): Promise<BigInteger | number> => index < 2
   ? index
   : await power([one, one, zero], index - 1).then(res => res[0]);
 
-const count = async (n: string): Promise<string> => {
+const count = async (index: number): Promise<Data> => {
   const start = Date.now();
-  const len = `${await fib(parseInt(n))}`.length;
+  const value = `${await fib(index)}`;
   const end = Date.now();
-  return (end - start) + 'ms ' + len;
-}
+  return {
+    value,
+    processTime: end - start,
+    len: value.length
+  };
+};
 
 // Sub
 sub.on('message', async (chanel, message) => {
-  redisClient.hset('values', message, await count(message));
+  redisClient.hset('values', message, JSON.stringify(await count(parseInt(message))));
 });
 
 sub.subscribe('insert');
