@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
-import { Button, Header, Icon, Image, Modal } from 'semantic-ui-react';
+import { Button, Modal, Loader, Segment, Form, Table, Icon, Dimmer, Image } from 'semantic-ui-react';
 
 interface Values {
   [key: string]: string;
@@ -20,6 +20,7 @@ const Fib = () => {
   const [seenIndexes, setSeenIndexes] = React.useState<[]>([]);
   const [values, setValues] = React.useState<Values>({});
   const [index, setIndex] = React.useState<string>('');
+  const [lastIndex, setLastIndex] = React.useState<string>('');
 
   const fetchValues = async () => {
     const values = await axios.get('/api/values/current');
@@ -34,14 +35,47 @@ const Fib = () => {
   React.useEffect(() => {
     fetchValues();
     fetchIndexes();
-  }, []);
+  }, [lastIndex]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await axios.post('api/values', { index });
-    setIndex('');
-    fetchValues();
-    fetchIndexes();
+    if (index) {
+      await axios.post('api/values', { index });
+      setLastIndex(index);
+      setIndex('');
+    }
+  };
+
+  const result = () => {
+    if (!values[lastIndex]) {
+      return (
+        <Segment>
+          <Dimmer active inverted>
+            <Loader>Loading</Loader>
+          </Dimmer>
+          <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+        </Segment>
+      );
+    }
+    if (values[lastIndex] === 'Nothing yet!') {
+      setTimeout(() => fetchValues(), 1000);
+      return (
+        <Segment>
+          <Dimmer active inverted>
+            <Loader>Loading</Loader>
+          </Dimmer>
+          <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+        </Segment>
+      );
+    }
+    const data: Data = JSON.parse(values[lastIndex]);
+    return (
+      <Segment>
+        <p><strong>Value:</strong> <ShowValue value={data.value} /></p>
+        <p><strong>Number of digits:</strong> {data.len} digits</p>
+        <p><strong>Processing time:</strong> {data.processTime} ms</p>
+      </Segment>
+    );
   };
 
   const seenIndexesList = () => {
@@ -53,22 +87,24 @@ const Fib = () => {
     for (let key in values) {
       if (values[key] === 'Nothing yet!') {
         entries.push(
-          <div key={key}>
-            Index {key}, value: {values[key]}
-          </div>
+          <Table.Row key={key}>
+            <Table.Cell>{key}</Table.Cell>
+            <Table.Cell><Icon loading name='spinner' /></Table.Cell>
+            <Table.Cell><Icon loading name='spinner' /></Table.Cell>
+            <Table.Cell><Icon loading name='spinner' /></Table.Cell>
+          </Table.Row>
         );
       } else {
         const data: Data = JSON.parse(values[key]);
-        const value = data.value.length <= 30
-          ? data.value
-          : `...${data.value.slice(-30)}`;
         entries.push(
-          <div key={key}>
-            Index {key}, value: {value} ({data.len} digits, {data.processTime} ms)
-            {data.value.length > 30 &&
+          <Table.Row key={key}>
+            <Table.Cell>{key}</Table.Cell>
+            <Table.Cell>
               <ShowValue value={data.value} />
-            }
-          </div>
+            </Table.Cell>
+            <Table.Cell>{data.len}</Table.Cell>
+            <Table.Cell>{data.processTime} ms</Table.Cell>
+          </Table.Row>
         );
       }
     }
@@ -76,36 +112,68 @@ const Fib = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>Enter your index:</label>
-        <input
-          type='number'
-          value={index}
-          min='0'
-          max='1000000'
-          onChange={event => setIndex(event.target.value)}
-        />
-        <button>Submit</button>
-      </form>
+    <div className='ui container'>
+      <Segment raised>
+        <h3>Enter your index</h3>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group widths='equal'>
+            <Form.Input
+              type='number'
+              value={index}
+              min='0'
+              max='1000000'
+              onChange={event => setIndex(event.target.value)}
+            />
+            <Button secondary>Submit</Button>
+          </Form.Group>
+        </Form>
+        {lastIndex && (
+          <div>
+            <h3>Result</h3>
+            {result()}
+          </div>
+        )}
+      </Segment>
 
-      <h3>Indexes I have seen:</h3>
-      {seenIndexesList()}
-
-      <h3>Calculated Values:</h3>
-      {valuesList()}
+      <Segment raised>
+        <h3>Indexes I have seen</h3>
+        {seenIndexesList()}
+      </Segment>
+      
+      <Segment raised>
+        <h3>Calculated Values</h3>
+        <Table unstackable celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Index</Table.HeaderCell>
+              <Table.HeaderCell>value</Table.HeaderCell>
+              <Table.HeaderCell>Digits</Table.HeaderCell>
+              <Table.HeaderCell>Time</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {valuesList()}
+          </Table.Body>
+        </Table>
+      </Segment>
     </div>
   );
 };
 
-const ShowValue = ({ value }: ShowValueProps) => (
-  <Modal trigger={<Button>Show</Button>}>
-    <Modal.Content scrolling >
-      <Modal.Description>
-        {value}
-      </Modal.Description>
-    </Modal.Content>
-  </Modal>
-);
+const ShowValue = ({ value }: ShowValueProps) => {
+  if (value.length <= 20) {
+    return <span>{value}</span>;
+  }
+  const shortValue = `...${value.slice(-20)}`;
+  return (
+    <Modal trigger={<span>{shortValue} <Icon name='external alternate' /></span>}>
+      <Modal.Content scrolling >
+        <Modal.Description>
+          {value}
+        </Modal.Description>
+      </Modal.Content>
+    </Modal>
+  )
+};
 
 export default Fib;
