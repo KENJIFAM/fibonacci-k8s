@@ -59,3 +59,8 @@ h1 {
 i.external {
   cursor: pointer;
 }
+
+.calculated {
+  overflow: auto;
+  padding: 0 !important;
+}

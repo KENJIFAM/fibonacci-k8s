@@ -140,21 +140,23 @@ const Fib = () => {
         {seenIndexesList()}
       </Segment>
       
-      <Segment raised>
+      <Segment>
         <h3>Calculated Values</h3>
-        <Table unstackable celled>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Index</Table.HeaderCell>
-              <Table.HeaderCell>value</Table.HeaderCell>
-              <Table.HeaderCell>Digits</Table.HeaderCell>
-              <Table.HeaderCell>Time</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {valuesList()}
-          </Table.Body>
-        </Table>
+        <Segment basic className='calculated'>
+          <Table unstackable celled>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Index</Table.HeaderCell>
+                <Table.HeaderCell>value</Table.HeaderCell>
+                <Table.HeaderCell>Digits</Table.HeaderCell>
+                <Table.HeaderCell>Time</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {valuesList()}
+            </Table.Body>
+          </Table>
+        </Segment>
       </Segment>
     </div>
   );
