@@ -41,6 +41,9 @@ const Fib = () => {
     event.preventDefault();
     if (index) {
       await axios.post('api/values', { index });
+      if (values[index]) {
+        setValues({ ...values, [index]: 'Nothing yet!' });
+      }
       setLastIndex(index);
       setIndex('');
     }
@@ -85,7 +88,7 @@ const Fib = () => {
   const valuesList = () => {
     const entries = [];
     for (let key in values) {
-      if (values[key] === 'Nothing yet!') {
+      if (!values[key] || values[key] === 'Nothing yet!') {
         entries.push(
           <Table.Row key={key}>
             <Table.Cell>{key}</Table.Cell>
