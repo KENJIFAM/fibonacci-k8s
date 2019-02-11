@@ -39,7 +39,7 @@ const Fib = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (index) {
+    if (index && index !== lastIndex) {
       await axios.post('api/values', { index });
       if (values[index]) {
         setValues({ ...values, [index]: 'Nothing yet!' });
