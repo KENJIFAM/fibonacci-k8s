@@ -6,6 +6,10 @@ interface Values {
   [key: string]: string;
 }
 
+interface SeenIndex {
+  number: number;
+}
+
 interface Data {
   value: string;
   processTime: number;
@@ -17,7 +21,7 @@ interface ShowValueProps {
 }
 
 const Fib = () => {
-  const [seenIndexes, setSeenIndexes] = React.useState<[]>([]);
+  const [seenIndexes, setSeenIndexes] = React.useState<SeenIndex[]>([]);
   const [values, setValues] = React.useState<Values>({});
   const [index, setIndex] = React.useState<string>('');
   const [lastIndex, setLastIndex] = React.useState<string>('');
@@ -29,7 +33,8 @@ const Fib = () => {
 
   const fetchIndexes = async () => {
     const seenIndexes = await axios.get('api/values/all');
-    setSeenIndexes(seenIndexes.data);
+    if(typeof seenIndexes.data === 'object' && Array.isArray(seenIndexes.data)) 
+      setSeenIndexes(seenIndexes.data);
   };
 
   React.useEffect(() => {
@@ -56,7 +61,7 @@ const Fib = () => {
           <Dimmer active inverted>
             <Loader>Loading</Loader>
           </Dimmer>
-          <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+          <Image src='./images/short-paragraph.png' />
         </Segment>
       );
     }
@@ -67,7 +72,7 @@ const Fib = () => {
           <Dimmer active inverted>
             <Loader>Loading</Loader>
           </Dimmer>
-          <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+          <Image src='./images/short-paragraph.png' />
         </Segment>
       );
     }
