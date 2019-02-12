@@ -24,7 +24,7 @@ const Fib = () => {
 
   const fetchValues = async () => {
     const values = await axios.get('/api/values/current');
-    setValues(values.data);
+    if(typeof values.data === 'object') setValues(values.data);
   };
 
   const fetchIndexes = async () => {
