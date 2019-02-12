@@ -1,6 +1,7 @@
 import * as React from 'react';
 import axios from 'axios';
 import { Button, Modal, Loader, Segment, Form, Table, Icon, Dimmer, Image } from 'semantic-ui-react';
+import image from './images/short-paragraph.png';
 
 interface Values {
   [key: string]: string;
@@ -28,7 +29,8 @@ const Fib = () => {
 
   const fetchValues = async () => {
     const values = await axios.get('/api/values/current');
-    if(typeof values.data === 'object') setValues(values.data);
+    if(typeof values.data === 'object') 
+      setValues(values.data);
   };
 
   const fetchIndexes = async () => {
@@ -47,7 +49,7 @@ const Fib = () => {
     if (index && index !== lastIndex) {
       await axios.post('api/values', { index });
       if (values[index]) {
-        setValues({ ...values, [index]: 'Nothing yet!' });
+        setValues({ ...values, [index]: '' });
       }
       setLastIndex(index);
       setIndex('');
@@ -61,7 +63,7 @@ const Fib = () => {
           <Dimmer active inverted>
             <Loader>Loading</Loader>
           </Dimmer>
-          <Image src='./images/short-paragraph.png' />
+          <Image src={image} />
         </Segment>
       );
     }
@@ -72,7 +74,7 @@ const Fib = () => {
           <Dimmer active inverted>
             <Loader>Loading</Loader>
           </Dimmer>
-          <Image src='./images/short-paragraph.png' />
+          <Image src={image} />
         </Segment>
       );
     }
