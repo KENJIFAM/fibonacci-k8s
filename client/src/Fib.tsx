@@ -150,7 +150,7 @@ const Fib = () => {
         {seenIndexesList()}
       </Segment>
       
-      <Segment>
+      <Segment raised>
         <h3>Calculated Values</h3>
         <Segment basic className='calculated'>
           <Table unstackable celled>
