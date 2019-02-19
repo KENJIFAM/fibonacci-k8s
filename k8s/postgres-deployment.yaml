@@ -31,5 +31,3 @@ spec:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
-            - name: PGDATA
-              value: /tmp
