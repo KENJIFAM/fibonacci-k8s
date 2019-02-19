@@ -3,3 +3,4 @@
 */build
 */package-lock.json
 service-account.json
+travis-encrypt.yml
