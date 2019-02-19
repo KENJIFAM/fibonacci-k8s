@@ -19,19 +19,17 @@ spec:
       containers:
         - name: postgres
           image: postgres
-          env:
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_PASSWORD
-              value: postgres_password
-            - name: POSTGRES_DB
-              value: postgres
-            - name: PGDATA
-              value: /tmp
           ports:
             - containerPort: 5432
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
               subPath: postgres
-              
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            - name: PGDATA
+              value: /tmp
