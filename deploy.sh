@@ -1,7 +1,7 @@
-docker build -t kenjifam/multi-client:latest -t stephengrider/multi-client:$SHA -f ./client/Dockerfile ./client
-docker build -t kenjifam/multi-server:latest -t stephengrider/multi-server:$SHA -f ./server/Dockerfile ./server
-docker build -t kenjifam/multi-worker:latest -t stephengrider/multi-worker:$SHA -f ./worker/Dockerfile ./worker
-  
+docker build -t kenjifam/multi-client:latest -t kenjifam/multi-client:$SHA -f ./client/Dockerfile ./client
+docker build -t kenjifam/multi-server:latest -t kenjifam/multi-server:$SHA -f ./server/Dockerfile ./server
+docker build -t kenjifam/multi-worker:latest -t kenjifam/multi-worker:$SHA -f ./worker/Dockerfile ./worker
+
 docker push kenjifam/multi-client:latest
 docker push kenjifam/multi-server:latest
 docker push kenjifam/multi-worker:latest
