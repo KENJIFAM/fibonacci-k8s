@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: fibonacci-k8s-tls
+spec:
+  secretName: fibonacci-k8s-kenjifam-fi
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: fibonacci-k8s.kenjifam.fi
+  dnsNames:
+    - fibonacci-k8s.kenjifam.fi
+    - www.fibonacci-k8s.kenjifam.fi
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - fibonacci-k8s.kenjifam.fi
+          - www.fibonacci-k8s.kenjifam.fi
